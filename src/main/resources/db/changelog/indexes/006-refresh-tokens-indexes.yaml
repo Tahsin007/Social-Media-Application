@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: refresh-token-indexes
+      author: tahsin
+      changes:
+        - createIndex:
+            indexName: idx_refresh_token_user
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            indexName: idx_refresh_token_expiry
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: expiry_date

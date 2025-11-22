@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: comment-indexes
+      author: tahsin
+      changes:
+        - createIndex:
+            indexName: idx_comment_post_id
+            tableName: comments
+            columns:
+              - column:
+                  name: post_id
+
+        - createIndex:
+            indexName: idx_comment_parent_id
+            tableName: comments
+            columns:
+              - column:
+                  name: parent_comment_id

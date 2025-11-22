@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-post-likes
+      author: tahsin
+      changes:
+        - createTable:
+            tableName: post_likes
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_post_like_post
+                    references: posts(id)
+                    deleteCascade: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_post_like_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP

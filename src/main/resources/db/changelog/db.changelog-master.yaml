@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - include:
+      file: schema/001-create-users.yaml
+
+  - include:
+      file: schema/002-create-refresh-tokens.yaml
+
+  - include:
+      file: schema/003-create-posts.yaml
+
+  - include:
+      file: schema/004-create-post-likes.yaml
+
+  - include:
+      file: schema/005-create-comments.yaml
+
+  - include:
+      file: schema/006-create-comment-likes.yaml
+
+  - include:
+      file: indexes/001-user-indexes.yaml
+
+  - include:
+      file: indexes/002-post-indexes.yaml
+
+  - include:
+      file: indexes/003-post-likes-indexes.yaml
+
+  - include:
+      file: indexes/004-comment-indexes.yaml
+
+  - include:
+      file: indexes/005-comment-likes-indexes.yaml
+
+  - include:
+      file: indexes/006-refresh-tokens-indexes.yaml

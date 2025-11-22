@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: post-likes-indexes
+      author: tahsin
+      changes:
+        - createIndex:
+            indexName: idx_post_likes_post_user
+            tableName: post_likes
+            unique: true
+            columns:
+              - column:
+                  name: post_id
+              - column:
+                  name: user_id

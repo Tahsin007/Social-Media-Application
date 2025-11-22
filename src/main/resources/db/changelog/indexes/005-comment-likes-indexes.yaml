@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: comment-likes-indexes
+      author: tahsin
+      changes:
+        - createIndex:
+            indexName: idx_comment_likes_comment_user
+            tableName: comment_likes
+            unique: true
+            columns:
+              - column:
+                  name: comment_id
+              - column:
+                  name: user_id

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-indexes
+      author: tahsin
+      changes:
+        - createIndex:
+            indexName: idx_user_email
+            tableName: users
+            columns:
+              - column:
+                  name: email

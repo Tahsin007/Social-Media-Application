@@ -1,5 +1,6 @@
 package com.example.social_media_application.security;
 import com.example.social_media_application.auth.model.User;
+import com.example.social_media_application.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
