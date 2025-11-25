@@ -59,6 +59,12 @@ public class PostController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/{id}/likes/count")
+    public ResponseEntity<Integer> getPostLikeCount(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        int likeCount = postService.getLikeCount(id, userDetails.getUsername());
+        return ResponseEntity.ok(likeCount);
+    }
+
     @GetMapping("/my-posts")
     public ResponseEntity<Page<PostResponse>> getMyPosts(@RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size,

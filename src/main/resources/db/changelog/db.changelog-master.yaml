@@ -18,6 +18,9 @@ databaseChangeLog:
       file: schema/006-create-comment-likes.yaml
 
   - include:
+      file: schema/007-add-like-count-to-posts.yaml
+
+  - include:
       file: indexes/001-user-indexes.yaml
 
   - include:

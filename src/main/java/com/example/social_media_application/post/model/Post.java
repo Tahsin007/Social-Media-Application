@@ -58,10 +58,19 @@ public class Post {
     @Builder.Default
     private Set<Comment> comments = new HashSet<>();
 
-    @Transient
-    public int getLikeCount() {
-        return likes.size();
+    @Column(name = "like_count")
+    @Builder.Default
+    private Integer likeCount = 0;
+
+    @PostLoad
+    private void onLoad() {
+        if (this.likeCount == null) {
+            this.likeCount = 0;
+        }
     }
+    @Column(name = "comment_count")
+    @Builder.Default
+    private Integer commentCount = 0;
 
     @Transient
     public int getCommentCount() {

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-like-count-to-posts
+      author: your-name
+      changes:
+        - addColumn:
+            tableName: posts
+            columns:
+              - column:
+                  name: like_count
+                  type: int
+                  defaultValue: 0
+                  constraints:
+                    nullable: false

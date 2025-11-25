@@ -3,6 +3,7 @@ package com.example.social_media_application.post.service;
 import com.example.social_media_application.auth.dto.UserResponse;
 import com.example.social_media_application.auth.model.User;
 import com.example.social_media_application.auth.repository.UserRepository;
+import com.example.social_media_application.comment.repository.CommentRepository;
 import com.example.social_media_application.exception.ResourceNotFoundException;
 import com.example.social_media_application.exception.UnauthorizedException;
 import com.example.social_media_application.post.dto.PostRequest;
@@ -31,6 +32,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public PostResponse createPost(PostRequest request, String userEmail) {
@@ -116,7 +118,6 @@ public class PostService {
         postRepository.delete(post);
         log.info("Post deleted successfully: {}", postId);
     }
-
     @Transactional
     public PostResponse toggleLike(Long postId, String userEmail) {
         log.info("Toggling like for post: {} by user: {}", postId, userEmail);
@@ -142,7 +143,6 @@ public class PostService {
             log.info("Post liked: {}", postId);
         }
 
-        post = postRepository.findById(postId).orElseThrow();
         return mapToPostResponse(post, currentUser);
     }
 
@@ -176,6 +176,20 @@ public class PostService {
         return posts.map(post -> mapToPostResponse(post, user));
     }
 
+    @Transactional(readOnly = true)
+    public int getLikeCount(Long postId, String userEmail) {
+        log.info("Fetching like count for post: {}", postId);
+
+        User currentUser = getUserByEmail(userEmail);
+        Post post = getPostOrThrow(postId);
+
+        if (!post.getIsPublic() && !post.getUser().getId().equals(currentUser.getId())) {
+            throw new UnauthorizedException("You don't have permission to view this post");
+        }
+
+        return post.getLikeCount();
+    }
+
     private Post getPostOrThrow(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + postId));
@@ -188,6 +202,8 @@ public class PostService {
 
     private PostResponse mapToPostResponse(Post post, User currentUser) {
         boolean isLikedByCurrentUser = postLikeRepository.existsByPostAndUser(post, currentUser);
+        long likeCount = postLikeRepository.countByPost(post);
+        long commentCount = commentRepository.countByPost(post);
 
         List<UserResponse> likedBy = postLikeRepository.findByPost(post).stream()
                 .map(like -> mapToUserResponse(like.getUser()))
@@ -199,8 +215,8 @@ public class PostService {
                 .content(post.getContent())
                 .imageUrl(post.getImageUrl())
                 .isPublic(post.getIsPublic())
-                .likeCount(post.getLikeCount())
-                .commentCount(post.getCommentCount())
+                .likeCount((int) likeCount)
+                .commentCount((int) commentCount)
                 .isLikedByCurrentUser(isLikedByCurrentUser)
                 .likedBy(likedBy)
                 .createdAt(post.getCreatedAt())

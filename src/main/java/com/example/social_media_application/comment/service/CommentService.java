@@ -156,7 +156,7 @@ public class CommentService {
             log.info("Comment liked: {}", commentId);
         }
 
-        comment = commentRepository.findById(commentId).orElseThrow();
+        comment = getCommentOrThrow(commentId);
         return mapToCommentResponse(comment, currentUser);
     }
 
