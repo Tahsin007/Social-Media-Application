@@ -239,9 +239,12 @@ public class CommentService {
     }
 
     private CommentResponse mapToCommentResponse(Comment comment, User currentUser) {
-        boolean isLikedByCurrentUser = commentLikeRepository.existsByCommentAndUser(comment, currentUser);
+        List<CommentLike> likes = commentLikeRepository.findByComment(comment);
 
-        List<UserResponse> likedBy = commentLikeRepository.findByComment(comment).stream()
+        boolean isLikedByCurrentUser = likes.stream()
+                .anyMatch(like -> like.getUser().getId().equals(currentUser.getId()));
+
+        List<UserResponse> likedBy = likes.stream()
                 .map(like -> mapToUserResponse(like.getUser()))
                 .collect(Collectors.toList());
 
@@ -251,7 +254,7 @@ public class CommentService {
                 .user(mapToUserResponse(comment.getUser()))
                 .parentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null)
                 .content(comment.getContent())
-                .likeCount(comment.getLikeCount())
+                .likeCount(likes.size())
                 .isLikedByCurrentUser(isLikedByCurrentUser)
                 .likedBy(likedBy)
                 .replies(null)

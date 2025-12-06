@@ -168,4 +168,17 @@ public class AuthService {
                 .createdAt(user.getCreatedAt())
                 .build();
     }
+
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
 }

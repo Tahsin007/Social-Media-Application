@@ -41,6 +41,12 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+        PostResponse response = postService.updatePost(id, request, userDetails.getUsername());
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
         postService.deletePost(id, userDetails.getUsername());
@@ -70,6 +76,13 @@ public class PostController {
                                                          @RequestParam(defaultValue = "10") int size,
                                                          @AuthenticationPrincipal UserDetails userDetails) {
         Page<PostResponse> responses = postService.getUserPosts(userDetails.getUsername(), page, size);
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PostResponse>> getPostsByUserId(@PathVariable Long userId,
+                                                               @AuthenticationPrincipal UserDetails userDetails) {
+        List<PostResponse> responses = postService.getPostsByUserId(userId, userDetails.getUsername());
         return ResponseEntity.ok(responses);
     }
 }

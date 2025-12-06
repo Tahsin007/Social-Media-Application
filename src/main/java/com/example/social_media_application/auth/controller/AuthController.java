@@ -50,8 +50,17 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(Authentication authentication) {
+        if(authentication == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         String email = authentication.getName();
         UserResponse user = authService.getCurrentUser(email);
+        return ResponseEntity.ok(ApiResponse.success("User retrieved successfully", user));
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+        UserResponse user = authService.getUserById(id);
         return ResponseEntity.ok(ApiResponse.success("User retrieved successfully", user));
     }
 

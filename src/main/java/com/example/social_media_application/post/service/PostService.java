@@ -190,6 +190,27 @@ public class PostService {
         return post.getLikeCount();
     }
 
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostsByUserId(Long userId, String currentUserEmail) {
+        log.info("Fetching all posts for user ID: {}", userId);
+
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+        User currentUser = getUserByEmail(currentUserEmail);
+
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by("createdAt").descending());
+        Page<Post> posts = null;
+
+        if (targetUser.getId().equals(currentUser.getId())) {
+            // User is requesting their own posts, so show all
+            posts = postRepository.findByUserOrderByCreatedAtDesc(targetUser, pageable);
+        }
+        assert posts != null;
+        return posts.getContent().stream()
+                .map(post -> mapToPostResponse(post, currentUser))
+                .collect(Collectors.toList());
+    }
+
     private Post getPostOrThrow(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + postId));
